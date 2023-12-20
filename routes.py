@@ -74,7 +74,8 @@ def login():
 @app.route("/messages", methods=["GET"])
 def show_messages():
     if request.method == "GET":
-        return render_template("messages.html")
+        all_messages = messages.get_all_messages()
+        return render_template("messages.html", messages=all_messages)
 
 @app.route("/messages/new_message", methods=["GET", "POST"])
 def send_message():
@@ -82,15 +83,55 @@ def send_message():
         return render_template("new_message.html")
     
     if request.method == "POST":
-        #users.check_csrf()
         #Flaw 2
-        #This should be called in the backend when POST request is made
-        #At the same time the messages.html should have hidden input form when submitting the form
+        #This demonstrates the CSRF-flaw
+        #Even the messages.html has hidden input form for CSRF, it is never called in the routes
+        #Also even the function is available in the users.py, it is not called here
         #Also, users.py should have this function so that routes.py can call it
+        #This POST method should have this function calling:
+        #users.check_csrf()
 
         content = request.form["content"]
+        creator_id = session.get("user_id")
 
-        messages.new_message(content)
-    return render_template("messages.html")
+        if creator_id is None:
+            flash("Failed to add message. User not authenticated.")
+            return render_template("new_message.html")
 
+        if messages.new_message(content,creator_id):
+            return redirect("/messages")
+        else:
+            flash("failed to add message")
+            return render_template("new_message.html")
+    return render_template("messages.html", messages=messages)
+        
+@app.route("/logout")
+def logout():
+     users.logout()
+     return redirect("/login")
 
+@app.route("/admin", methods=["GET", "POST"])
+def show_admin():
+    if request.method == "GET":
+        all_users = users.get_all_users()
+        all_messages = messages.get_all_messages()
+        return render_template("admin.html", users=all_users, messages=all_messages)
+    
+    
+    
+        #Flaw 4
+        #Admin buttons are not shown if the user is regular user in the messages page, but
+        #regular user can see the admin page if he/she tries to change the URL to /Admin
+        #Below is code which would deny the access if the user is not admin
+    
+    # if request.method == "GET":    
+    #     user_id = session.get("user_id")
+    #     user_role = users.get_user_role(user_id)
+    #     if user_role and user_role == 2:
+    #        all_users = users.get_all_users()
+    #        all_messages = messages.get_all_messages()
+    #        return render_template("admin.html", users=all_users, messages=all_messages)
+    #     else:
+    #        flash("Access denied. The page is only for admin users.", "error")
+    #        return redirect("/messages")
+           

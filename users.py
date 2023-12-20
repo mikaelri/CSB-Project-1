@@ -5,7 +5,6 @@ from sqlalchemy import text
 from werkzeug.security import check_password_hash, generate_password_hash
 
 def login(username: str, password: str):
-    """Login function for database"""
     sql = text("SELECT password, id, role FROM users WHERE username=:username")
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
@@ -13,30 +12,41 @@ def login(username: str, password: str):
         return False
     #if not check_password_hash(user[0], password):
     #    return False
-    #Flaw 2
     session["user_id"] = user[1]
     session["user_username"] = username
     session["user_role"] = user[2]
     #session["csrf_token"] = os.urandom(16).hex()
-    #Flaw 2, this should be used to generate the CSRF token, which is then called in the routes.py
     return True
 
-def create_user(username: str, password: str, role: int):
-    #hash_value = generate_password_hash(password)
-    #Flaw 3
+def logout():
+    del session["user_id"]
+    del session["user_username"]
+    del session["user_role"]
 
+def create_user(username: str, password: str, role: int):
+    #Flaw 3
+    #In the user creation the password hash is not generated
+    #This should be corrected by adding the below mentioned lines, which are commented with #
+
+    #hash_value = generate_password_hash(password)
     try:
         sql = text("""
                    INSERT INTO users (username, password, role) 
                    VALUES (:username, :password, :role)
                    """)
         db.session.execute(sql, {"username":username, "password":password, "role":role})
-        #Flaw 3, "password":hash_value should be used to use and store the hashed value
+        #Password":hash_value should be used to use and store the hashed value
         db.session.commit()
     except:
         return False
     
     return login(username, password)
+
+def get_all_users():
+    sql = text("SELECT username, password FROM users")
+    result = db.session.execute(sql)
+    all_messages = result.fetchall()
+    return all_messages
 
 def user_exists(username: str):
     sql = text("SELECT username from users WHERE username=:username")

@@ -3,12 +3,28 @@
 
 <h2>Add new message </h2>
 <br>
-<form action="messages" method="POST">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message[1] }}"><b>{{ message }}</b></div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
+<form action="/messages/new_message" method="POST">
     <textarea name="content" rows="3" cols="40"></textarea><br>
     <button type="submit" class="btn btn-light mt-3">Add new message</button>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
 </form>
 
-LISÄÄ RETURN TO ALL MESSAGES
-
+<form action="/messages" method="GET">
+    <div class="text-left">
+      <button type="submit" class="btn btn-light mt-3">Return to messages</button>
+    </div>
+  </form><br>
 
 {% endblock %}
