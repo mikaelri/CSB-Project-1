@@ -6,3 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT,
     role INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS messages (
+    id SERIAL PRIMARY KEY,
+    creator_id INTEGER REFERENCES users(id),
+    message TEXT
+);

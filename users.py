@@ -1,6 +1,6 @@
 import os
 from db import db
-from flask import session
+from flask import session, request, abort
 from sqlalchemy import text
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -53,3 +53,7 @@ def get_user_role(user_id: int):
     if user:
         return user.role
     return None
+
+def check_csrf():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)

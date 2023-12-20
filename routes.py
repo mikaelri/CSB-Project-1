@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, redirect, request, session, flash
-import users
+import users, messages
 
 @app.route("/")
 def index():
@@ -50,10 +50,6 @@ def create_user():
     
     return render_template("register.html")
 
-@app.route("/messages")
-def messages():
-    return render_template("/messages.html")
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -74,3 +70,27 @@ def login():
         session["role"] = user_role
 
     return redirect("/messages")
+
+@app.route("/messages", methods=["GET"])
+def show_messages():
+    if request.method == "GET":
+        return render_template("messages.html")
+
+@app.route("/messages/new_message", methods=["GET", "POST"])
+def send_message():
+    if request.method == "GET":
+        return render_template("new_message.html")
+    
+    if request.method == "POST":
+        #users.check_csrf()
+        #Flaw 2
+        #This should be called in the backend when POST request is made
+        #At the same time the messages.html should have hidden input form when submitting the form
+        #Also, users.py should have this function so that routes.py can call it
+
+        content = request.form["content"]
+
+        messages.new_message(content)
+    return render_template("messages.html")
+
+

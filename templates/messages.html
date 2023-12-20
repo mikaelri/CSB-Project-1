@@ -3,7 +3,32 @@
 
 <h2>Messages page</h2>
 
+<form class="form-inline" action="messages/new_message" method="GET">
+    <div class="text-left">
+      <button type="submit" class="btn btn-light mt-3">Add new message</button>
+    </div>
+  </form>
 
+<form class="form-inline" action="/admin" method="GET">
+<div class="text-left">
+    <button type="submit" class="btn btn-warning mt-3">Admin page</button>
+</div>
+</form>
+
+<form action="/logout" method="GET">
+    <div class="text-left">
+      <button type="submit" class="btn btn-light mt-3">Log out</button>
+    </div>
+  </form><br>
+    </form>
+
+<br>
+<h3>All messages</h3>
+<hr>
+{% for message in messages %}
+{{ message.content }}
+<hr>
+{% endfor %}
 
 
 
