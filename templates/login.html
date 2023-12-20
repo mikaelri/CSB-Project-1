@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Login page</h2>
+
+<p>This is a chat application where users can send messages to each other.</p>
+
+<p>To login, please add your username and password.</p>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message[1] }}"><b>{{ message }}</b></div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<form action="/login" method="POST">
+    <div class="form-group col-md-4">
+        <div class="row g-3 align-items-center">
+            <input type="text" class="form-control" name="username" placeholder="username" id="username">
+            <input type="password" class="form-control mt-1" name= "password1" placeholder="password" id="password1">
+        </div>
+    </div>
+
+    <div class="text-left">
+        <button type="submit" class="btn btn-light">Login</button>
+    </div>
+</form><br
+
+
+<p>To start using the application you first need to register, which can be done below.</p>
+
+<form action="/register" method="GET">
+    <div class="text-left">
+        <button type="submit" class="btn btn-light">Register a new user</button>
+    </div>
+</form><br>
+
+
+{% endblock %}

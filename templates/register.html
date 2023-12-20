@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Registration page</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message[1] }}"><b>{{ message }}</b></div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<p>Please fill in your details and once you click submit you will be logged in.</p>
+
+<form action="/register" method="POST">
+  <div class="form-group col-4 mt-2">
+    <div class="row g-3 align-items-center">
+      
+      <p><b>Username:</b>
+      <input type="text" name="username" id="username" minlength="3" maxlength="25" class="form-control" placeholder="3-25 characters" required></p>
+      
+      <p><b>Password:</b>
+      <input type="password" name="password1" id="password1" minlength="5" maxlength="25" class="form-control" placeholder="5-25 characters" required></p>
+
+      <p><b>Confirm password:</b><br>
+      <input type="password" name="password2" id="password2" minlength="5" maxlength="25" class="form-control" placeholder="5-25 characters" required></p>
+      
+      <p><b>User role:</b>
+      <select class="form-control" name="role">
+        <option value=1> Regular
+        <option value=2> Admin
+      </select></p>
+    </div>
+  </div>
+
+  <div class="text-left">
+    <button type="submit" class="btn btn-light">Confirm registration</button>     
+  </div>
+  <!-- 
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+  spanning multiple lines -->
+</form>
+
+<form class="form-inline" action="/login" method="GET">
+  <div class="text-left">
+    <button type="submit" class="btn btn-light mt-3">Return to front page</button>
+  </div>
+</form>
+
+{% endblock %}
