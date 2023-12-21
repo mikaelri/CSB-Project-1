@@ -1,8 +1,12 @@
 # CSB-Project-1
 
-This is is a course project for cyber security base project 1: https://cybersecuritybase.mooc.fi/module-3.1
+This is still work in progress still so the instructions might not be up-to-date.
 
-The idea is to demonstrate at least 5 flaws from the OWASP listing 2021: https://owasp.org/www-project-top-ten/
+This is is a course project for cyber security base project 1: 
+https://cybersecuritybase.mooc.fi/module-3.1
+
+The idea is to demonstrate at least 5 flaws from the OWASP listing 2021:
+https://owasp.org/www-project-top-ten/
 
 ***Installing instructions / how to test the app locally***
 ```
