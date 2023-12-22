@@ -10,7 +10,7 @@ def login(username: str, password: str):
     user = result.fetchone()
     if not user:
         return False
-    #Flaw 3,
+    #Flaw 3, which is Cryptographic failure
     #the below mentioned if statement should be used
 
     #if not check_password_hash(user[0], password):
@@ -28,7 +28,7 @@ def logout():
     del session["user_role"]
 
 def create_user(username: str, email: str, password: str, role: int):
-    #Flaw 3
+    #Flaw 3, which is Cryptographic failure
     #In the user creation the password hash is not generated
     #This should be corrected by adding the below mentioned lines, which are commented with #
 
@@ -102,7 +102,7 @@ def get_user_id(user_id: int):
     return users
 
 def update_email(email: str, user_id: int):
-    #Flaw1
+    #Flaw5, which is injection.
     #Injection can happen when the SQL query does not use parameters
     #This is due that the user can change the structure of the query and make all of the users admins
     #i.e. user can use the following type of query '; UPDATE users SET role = 2 WHERE id > 0; --
