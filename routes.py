@@ -27,8 +27,8 @@ def create_user():
             flash("Username is already taken.")
             return render_template("register.html")
         
-        if not (5 <= len(email) <= 40):
-            flash("email should be between 5-40 characters.")
+        if not (5 <= len(email) <= 50):
+            flash("email should be between 5-50 characters.")
             return render_template("register.html")
 
         if password1 != password2:
@@ -114,6 +114,17 @@ def send_message():
 def update():
     if request.method == "GET":
         return render_template("update.html")
+    
+    if request.method == "POST":
+        users.check_csrf()
+        user_id = session["user_id"]
+        email = request.form["email"]
+
+        users.update_email(email,user_id)
+        flash("email update succesfully")
+
+        return render_template("/messages.html")
+
         
 @app.route("/logout")
 def logout():
@@ -151,7 +162,7 @@ def show_admin():
         #users.check_csrf()
         #users.require_role(2)
 
-        user_id = request.form["user_id"]
+        user_id = int(request.form["user_id"])
         username = users.get_username(user_id)
 
         if users.delete_user(user_id):
@@ -168,4 +179,3 @@ def show_admin():
 
         return redirect("/admin")
         
-

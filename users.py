@@ -88,11 +88,37 @@ def get_username(user_id: int):
         return result[0]
     return None
 
+def get_email(user_id: int):
+    sql = text("SELECT email FROM users WHERE id=:user_id")
+    result = db.session.execute(sql, {"user_id": user_id}).fetchone()
+    if result:
+        return result[0]
+    return None
+
 def get_user_id(user_id: int):
     sql = text("SELECT id, username FROM users WHERE id=:user_id")
     result = db.session.execute(sql, {"user_id":user_id})
     users = result.fetchone()
     return users
+
+def update_email(email: str, user_id: int):
+    #Flaw1
+    #Injection can happen when the SQL query does not use parameters
+    #This is due that the user can change the structure of the query and make all of the users admins
+    #i.e. user can use the following type of query '; UPDATE users SET role = 2 WHERE id > 0; --
+    #after this inserted in the email if the user log out and in it can see the admin buttons
+    #in addition the update.html should have min and max lenghts for email
+
+    sql = text("UPDATE users SET email='" + email + "' WHERE id=" + str(user_id))
+    db.session.execute(sql)
+    db.session.commit()
+
+    #corrected query below, where the parameters are used so injection cannot happen
+
+    # sql = text("UPDATE users SET email=:email WHERE id=:user_id")
+    # db.session.execute(sql, {"email":email, "user_id":user_id})
+    # db.session.commit()
+
 
 def check_csrf():
     if session["csrf_token"] != request.form["csrf_token"]:

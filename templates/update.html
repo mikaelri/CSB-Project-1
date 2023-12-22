@@ -3,6 +3,28 @@
 
 <h2>Update email</h2>
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message[1] }}"><b>{{ message }}</b></div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
+<form class="form-inline" action="/update" method="POST">
+    <div class="text-left">
+        <input type="text" name="email" id="email" class="form-control" placeholder="new email" required></p>
+        <button type="submit" class="btn btn-light mt-3">Update new email</button>
+    </div>
+<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
+
+<form action="/messages" method="GET">
+    <div class="text-left">
+      <button type="submit" class="btn btn-light mt-3">Return to messages</button>
+    </div>
+  </form><br>
 
 {% endblock %}
