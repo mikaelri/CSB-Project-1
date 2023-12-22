@@ -1,2 +1,62 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Admin page</h2>
+
+<p>Below you can see a list of all users.</p>
+
+<p><table class="table-sm table-borderless">
+  <thead class="thead">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Username</th>
+        <th scope="col">Role</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.id }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ "Admin" if user.role == 2 else "Regular User" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table></p>
+  
+<p>As an admin user you can delete selected user(s).<br>
+
+<form class="form-inline" action="/admin" method="POST">
+  <div class="wrap-input">
+    <label for="userSelect"></label>
+    <select class="form-control" name="user_id" id="userSelect">
+      {% for user in users %}
+      <option value="{{ user.id }}">{{ user.username }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </div>
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+</form>
+    
+<p>{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+          <b><div class="alert alert-{{ message[1] }}">{{ message }}</div></b>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  </p>
+
+<form class="form-inline" action="/messages" method="GET">
+  <div class="text-left mt-1">
+    <button type="submit" class="btn btn-secondary">Return to messages</button>
+  </div>
+</form>
 
 
+
+{% endblock %}

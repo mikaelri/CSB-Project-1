@@ -27,7 +27,7 @@ def logout():
     del session["user_username"]
     del session["user_role"]
 
-def create_user(username: str, password: str, role: int):
+def create_user(username: str, email: str, password: str, role: int):
     #Flaw 3
     #In the user creation the password hash is not generated
     #This should be corrected by adding the below mentioned lines, which are commented with #
@@ -35,19 +35,19 @@ def create_user(username: str, password: str, role: int):
     #hash_value = generate_password_hash(password)
     try:
         sql = text("""
-                   INSERT INTO users (username, password, role) 
-                   VALUES (:username, :password, :role)
+                   INSERT INTO users (username, email, password, role) 
+                   VALUES (:username, :email, :password, :role)
                    """)
-        db.session.execute(sql, {"username":username, "password":password, "role":role})
-                                                     #"password":hash_value should be used to use and store the hashed value
-        db.session.commit()
+        db.session.execute(sql, {"username":username, "email":email, "password":password, "role":role})
+                                                                    #"password":hash_value should be used to use and store the hashed value
+        db.session.commit()     
     except:
         return False
     
     return login(username, password)
 
 def get_all_users():
-    sql = text("SELECT username, password FROM users")
+    sql = text("SELECT id, username, role FROM users")
     result = db.session.execute(sql)
     all_messages = result.fetchall()
     return all_messages
@@ -68,6 +68,36 @@ def get_user_role(user_id: int):
         return user.role
     return None
 
+def delete_user(user_id: int):
+    try:
+        sql_messages = text("DELETE FROM messages WHERE creator_id=:user_id")
+        db.session.execute(sql_messages, {"user_id": user_id})
+
+        sql_user = text("DELETE FROM users WHERE id=:user_id")
+        db.session.execute(sql_user, {"user_id": user_id})
+
+        db.session.commit()
+        return True
+    except:
+        return False
+
+def get_username(user_id: int):
+    sql = text("SELECT username FROM users WHERE id=:user_id")
+    result = db.session.execute(sql, {"user_id": user_id}).fetchone()
+    if result:
+        return result[0]
+    return None
+
+def get_user_id(user_id: int):
+    sql = text("SELECT id, username FROM users WHERE id=:user_id")
+    result = db.session.execute(sql, {"user_id":user_id})
+    users = result.fetchone()
+    return users
+
 def check_csrf():
     if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)
+
+def require_role(role: int):
+    if role > session.get("user_role", 0):
         abort(403)

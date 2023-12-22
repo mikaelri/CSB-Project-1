@@ -15,7 +15,8 @@ def create_user():
     if request.method == "POST":
         username = request.form["username"]
         password1 = request.form["password1"]
-        password2 = request.form ["password2"]
+        password2 = request.form["password2"]
+        email = request.form["email"]
         role = request.form["role"]
 
         if not (3 <= len(username) <= 25):
@@ -24,6 +25,10 @@ def create_user():
         
         if users.user_exists(username):
             flash("Username is already taken.")
+            return render_template("register.html")
+        
+        if not (5 <= len(email) <= 40):
+            flash("email should be between 5-40 characters.")
             return render_template("register.html")
 
         if password1 != password2:
@@ -42,8 +47,11 @@ def create_user():
             flash("Unknown user type.")
             return render_template("register.html")
         
-        if users.create_user(username, password1, role):
+        if users.create_user(username, email, password1,  role):
             flash("User created succesfully, you are now logged in", "success")
+            user_id = session.get("user_id")
+            user_role = users.get_user_role(user_id)
+            session["role"] = user_role
             return redirect("/messages")
     
     return render_template("register.html")
@@ -60,7 +68,7 @@ def login():
     if not users.login(username, password):
         flash("Wrong username, password or no user created.")
         return render_template("login.html")
-
+    
     user_id = session.get("user_id")
     user_role = users.get_user_role(user_id)
     session["creator_id"] = user_id
@@ -69,12 +77,12 @@ def login():
 
     return redirect("/messages")
 
-@app.route("/messages", methods=["GET"])
+@app.route("/messages", methods=["GET", "POST"])
 def show_messages():
     if request.method == "GET":
         all_messages = messages.get_all_messages()
         return render_template("messages.html", messages=all_messages)
-
+    
 @app.route("/messages/new_message", methods=["GET", "POST"])
 def send_message():
     if request.method == "GET":
@@ -101,7 +109,11 @@ def send_message():
         else:
             flash("failed to add message")
             return render_template("new_message.html")
-    return render_template("messages.html", messages=messages)
+
+@app.route("/update", methods=["GET", "POST"])
+def update():
+    if request.method == "GET":
+        return render_template("update.html")
         
 @app.route("/logout")
 def logout():
@@ -114,8 +126,6 @@ def show_admin():
         all_users = users.get_all_users()
         all_messages = messages.get_all_messages()
         return render_template("admin.html", users=all_users, messages=all_messages)
-    
-    
     
         #Flaw 4
         #Admin buttons are not shown if the user is regular user in the messages page, but
@@ -133,3 +143,29 @@ def show_admin():
     #        flash("Access denied. The page is only for admin users.", "error")
     #        return redirect("/messages")
            
+    if request.method == "POST":
+        #Flaw2, same as in below line 84
+        #Flaw4
+        #This is a bad access control as it is not checked if the user is really admin
+        #below check should be added:
+        #users.check_csrf()
+        #users.require_role(2)
+
+        user_id = request.form["user_id"]
+        username = users.get_username(user_id)
+
+        if users.delete_user(user_id):
+            all_users = users.get_all_users()
+
+            if not all_users:
+                flash("All users deleted, please create a new one.")
+                return redirect ("/login")
+                     
+            flash(f"User {username} deleted successfully")
+            
+        else:
+            flash("Failed to delete user, try again")
+
+        return redirect("/admin")
+        
+

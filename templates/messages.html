@@ -27,6 +27,13 @@
 </form>
 {% endif %}
 
+<form action="/update" method="GET">
+  <div class="text-left">
+    <button type="submit" class="btn btn-light mt-3">Update email</button>
+  </div>
+</form>
+  </form>
+
 <form action="/logout" method="GET">
     <div class="text-left">
       <button type="submit" class="btn btn-light mt-3">Log out</button>
@@ -41,7 +48,5 @@
 {{ message.content }}
 <hr>
 {% endfor %}
-
-
 
 {% endblock %}
