@@ -3,6 +3,16 @@
 
 <h2>Messages page</h2>
 
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="flash-messages">
+    {% for message in messages %}
+        <div class="alert alert-{{ message[1] }}"><b>{{ message }}</b></div>
+    {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+
 <form class="form-inline" action="messages/new_message" method="GET">
     <div class="text-left">
       <button type="submit" class="btn btn-light mt-3">Add new message</button>
@@ -23,17 +33,6 @@
     </div>
   </form><br>
     </form>
-
-
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-    <div class="flash-messages">
-    {% for message in messages %}
-        <div class="alert alert-{{ message[1] }}"><b>{{ message }}</b></div>
-    {% endfor %}
-    </div>
-{% endif %}
-{% endwith %}
 
 <br>
 <h3>All messages</h3>

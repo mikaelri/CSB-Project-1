@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template, redirect, request, session, flash
 import users, messages
+import re
 
 @app.route("/")
 def index():
@@ -24,11 +25,7 @@ def create_user():
         if users.user_exists(username):
             flash("Username is already taken.")
             return render_template("register.html")
-        
-        if not ( 5 <= len(password1) <= 25):
-            flash("Password should be between 5-25 characters.")
-            return render_template("register.html")
-        
+
         if password1 != password2:
             flash("Given passwords are not the same.")
             return render_template("register.html")
@@ -37,16 +34,17 @@ def create_user():
             flash("Password is empty.")
             return render_template("register.html")
         
+        if not (5 <= len(password1) <= 25) or not re.search("[0-9]", password1) or not re.search("[A-Z]", password1):
+            flash("Password should be between 5-25 characters and contain number and capital letter")
+            return render_template("register.html")
+                
         if role not in ("1", "2"):
             flash("Unknown user type.")
             return render_template("register.html")
         
-        if not users.create_user(username, password1, role):
-            flash("Registration not succesfull, check username and password.")
-            return render_template("register.html")
-    
-        flash("User created succesfully, you can login now!", "success")
-        return redirect("/login")
+        if users.create_user(username, password1, role):
+            flash("User created succesfully, you are now logged in", "success")
+            return redirect("/messages")
     
     return render_template("register.html")
 

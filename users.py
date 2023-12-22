@@ -10,12 +10,16 @@ def login(username: str, password: str):
     user = result.fetchone()
     if not user:
         return False
+    #Flaw 3,
+    #the below mentioned if statement should be used
+
     #if not check_password_hash(user[0], password):
     #    return False
+
     session["user_id"] = user[1]
     session["user_username"] = username
     session["user_role"] = user[2]
-    #session["csrf_token"] = os.urandom(16).hex()
+    session["csrf_token"] = os.urandom(16).hex()
     return True
 
 def logout():
@@ -35,7 +39,7 @@ def create_user(username: str, password: str, role: int):
                    VALUES (:username, :password, :role)
                    """)
         db.session.execute(sql, {"username":username, "password":password, "role":role})
-        #Password":hash_value should be used to use and store the hashed value
+                                                     #"password":hash_value should be used to use and store the hashed value
         db.session.commit()
     except:
         return False
