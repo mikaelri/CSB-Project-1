@@ -1,6 +1,6 @@
 # CSB-Project-1
 
-This is still work in progress still so the instructions might not be up-to-date.
+This is still work in progress so the instructions might not be up-to-date.
 
 This is is a course project for cyber security base project 1: 
 https://cybersecuritybase.mooc.fi/module-3.1
@@ -27,18 +27,13 @@ other: https://www.postgresql.org/download/
 git clone https://github.com/mikaelri/CSB-Project-1.git
 ```
 
-**2. Update .env file's username for DATABASE_URL
-(this is one of the flaws that .env is in the repository):**
+**2. Update .env file's username for DATABASE_URL** (this is one of the flaws that .env is in the repository)
 ```
 DATABASE_URL=postgresql:///<username>
 
-Somehow if this is not working please use the below option:
+If the application won't work for some reason you can try using the below option:
 
 DATABASE_URL=postgresql+psycopg2://<username>
-```
-
-```
-SECRET_KEY=<your_secret_key> (I have put this already in the file)
 ```
 
 **3. Next activate the virtual environment and install the requirements in terminal:**
