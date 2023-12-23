@@ -40,10 +40,10 @@ def create_user(username: str, email: str, password: str, role: int):
                    """)
         db.session.execute(sql, {"username":username, "email":email, "password":password, "role":role})
                                                                     #"password":hash_value should be used to use and store the hashed value
-        db.session.commit()     
+        db.session.commit()
     except:
         return False
-    
+
     return login(username, password)
 
 def get_all_users():
@@ -106,8 +106,8 @@ def update_email(email: str, user_id: int):
     #Injection can happen when the SQL query does not use parameters
     #This is due that the user can change the structure of the query and make all of the users admins
     #i.e. user can use the following type of query '; UPDATE users SET role = 2 WHERE id > 0; --
-    #after this inserted in the email if the user log out and in it can see the admin buttons
-    #in addition the update.html should have min and max lenghts for email
+    #After this inserted in the email if the user logs out and in it has admin rights and can see admin buttons
+    #In addition the update.html should have min and max lenghts for email
 
     sql = text("UPDATE users SET email='" + email + "' WHERE id=" + str(user_id))
     db.session.execute(sql)
@@ -118,7 +118,6 @@ def update_email(email: str, user_id: int):
     # sql = text("UPDATE users SET email=:email WHERE id=:user_id")
     # db.session.execute(sql, {"email":email, "user_id":user_id})
     # db.session.commit()
-
 
 def check_csrf():
     if session["csrf_token"] != request.form["csrf_token"]:

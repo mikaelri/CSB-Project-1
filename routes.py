@@ -90,11 +90,10 @@ def send_message():
     
     if request.method == "POST":
         #Flaw 2, which is CSRF Vunerability
-        #This demonstrates the CSRF-flaw
-        #Even the messages.html has hidden input form for CSRF, it is never called in the routes
-        #Also even the function is available in the users.py, it is not called here
-        #Also, users.py should have this function so that routes.py can call it
-        #This POST method should have this function calling:
+        #Even the messages.html has hidden input form for CSRF, it is never called here in the backend side
+        #The function is available in the users.py, but it should be called here to activate it
+        #This should be added:
+
         #users.check_csrf()
 
         content = request.form["content"]
@@ -140,8 +139,8 @@ def show_admin():
     
         #Flaw 4, which is Broken Access Control
         #Admin buttons are not shown if the user is regular user in the messages page, but
-        #regular user can see the admin page if he/she tries to change the URL to /Admin
-        #Below is code which would deny the access if the user is not admin
+        #Regular user can see the admin page if he/she tries to change the URL to /Admin
+        #Below is one option to correct this and deny access for not admins:
     
     # if request.method == "GET":    
     #     user_id = session.get("user_id")
@@ -155,10 +154,10 @@ def show_admin():
     #        return redirect("/messages")
            
     if request.method == "POST":
-        #Flaw 2, same as in below line 84
+        #Flaw 2, same as in below line 92
         #Flaw 4, which is Broken Access Control
         #This is a bad access control as it is not checked if the user is really admin
-        #below check should be added:
+        #below checks should be added:
         #users.check_csrf()
         #users.require_role(2)
 

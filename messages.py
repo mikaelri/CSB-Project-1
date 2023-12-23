@@ -1,7 +1,6 @@
 from db import db
 from sqlalchemy import text
 
-
 def new_message(content: str, creator_id: int):
     try:
         sql = text("INSERT INTO messages (content, creator_id) VALUES (:content, :creator_id)")
