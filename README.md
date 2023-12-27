@@ -51,7 +51,7 @@ pip install -r ./requirements.txt
 psql < schema.sql
 ```
 
-*If you get error connectio to server on socket you can activate the script with the command below and then re run the previous command:*
+*If you get error connectio to server on socket you can activate the script with the command below and then re run the previous command in new terminal window:*
 ```
 start-pg.sh
 ```
