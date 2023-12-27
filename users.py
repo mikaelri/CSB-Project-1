@@ -30,7 +30,7 @@ def logout():
 def create_user(username: str, email: str, password: str, role: int):
     #Flaw 3, which is Cryptographic failure
     #In the user creation the password hash is not generated
-    #This should be corrected by adding the below mentioned lines, which are commented with #
+    #This should be corrected by adding the below mentioned lines and password variable's parameter set to hash_value as mentioned in line 42.
 
     #hash_value = generate_password_hash(password)
     try:
@@ -102,11 +102,11 @@ def get_user_id(user_id: int):
     return users
 
 def update_email(email: str, user_id: int):
-    #Flaw5, which is injection.
-    #Injection can happen when the SQL query does not use parameters
-    #This is due that the user can change the structure of the query and make all of the users admins
+    #Flaw 5, which is injection.
+    #Injection can happen when the SQL query does not use parameters as values
+    #This is due that the user can change the structure of the query and make the user or all of the users admins
     #i.e. user can use the following type of query '; UPDATE users SET role = 2 WHERE id > 0; --
-    #After this inserted in the email if the user logs out and in it has admin rights and can see admin buttons
+    #After this inserted in the email form if the user logs out and in the user has admin rights and can see admin buttons
     #In addition the update.html should have min and max lenghts for email
 
     sql = text("UPDATE users SET email='" + email + "' WHERE id=" + str(user_id))

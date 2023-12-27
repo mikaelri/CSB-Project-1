@@ -139,7 +139,7 @@ def show_admin():
     
         #Flaw 4, which is Broken Access Control
         #Admin buttons are not shown if the user is regular user in the messages page, but
-        #Regular user can see the admin page if he/she tries to change the URL to /Admin
+        #Regular user can see the admin page if the user tries to change the URL to /admin
         #Below is one option to correct this and deny access for not admins:
     
     # if request.method == "GET":    
