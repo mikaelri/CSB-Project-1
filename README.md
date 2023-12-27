@@ -1,6 +1,5 @@
 # CSB-Project-1
 
-This is still work in progress so the instructions might not be up-to-date.
 
 This is is a course project for cyber security base project 1: 
 https://cybersecuritybase.mooc.fi/module-3.1
@@ -27,12 +26,12 @@ other: https://www.postgresql.org/download/
 git clone https://github.com/mikaelri/CSB-Project-1.git
 ```
 
-**2. Update .env file's username for DATABASE_URL** (this is one of the flaws that .env is in the repository)
+**2. Update .env file's (DATABASE_URL) username to the one you have in terminal** (this is one of the flaws that .env is in the repository)
 ```
 DATABASE_URL=postgresql:///<username>
-
-If the application won't work for some reason you can try using the below option:
-
+```
+*If the application won't work, you can try also the below*
+```
 DATABASE_URL=postgresql+psycopg2://<username>
 ```
 
@@ -47,12 +46,17 @@ source venv/bin/activate
 pip install -r ./requirements.txt
 ```
 
-**4. Create the database (option 1) in psql to your main account with command:**
+**4. Create the database (option 1) in psql to your main user with command:**
 ```
 psql < schema.sql
 ```
 
-**if you need create alternative user database (option 2) it can be done like this:**
+*If you get error connectio to server on socket you can activate the script with the command below and then re run the previous command:*
+```
+start-pg.sh
+```
+
+**if you need to create alternative user database (option 2) it can be done like this:**
 
 *activate postgreSQL:*
 
